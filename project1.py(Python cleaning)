@@ -1,0 +1,81 @@
+import pandas as pd
+
+try:
+    print("🔄 Loading dataset, please wait...\n")
+    
+    # Loading the dataset with the correct encoding to avoid decoding errors
+    df = pd.read_csv('Sample - Superstore.csv', encoding='latin1')
+    
+    print("=========================================")
+    print("🛍️  Retail Sales Analysis Report")
+    print("=========================================\n")
+
+    # 1. Calculating Total Sales and Net Profit
+    total_sales = df['Sales'].sum()
+    total_profit = df['Profit'].sum()
+
+    print(f"💰 Total Sales: ${round(total_sales, 2):,}")
+    print(f"📈 Total Profit: ${round(total_profit, 2):,}")
+    print("-" * 41)
+
+    # 2. Performance Analysis by Product Category
+    print("\n📦 Total Sales by Category:")
+    category_sales = df.groupby('Category')['Sales'].sum().sort_values(ascending=False)
+    print(category_sales.apply(lambda x: f"${x:,.2f}"))
+    print("-" * 41)
+
+    # 3. Geographical Analysis: Top 5 Profitable Cities
+    print("\n🏙️  Top 5 Most Profitable Cities:")
+    top_cities = df.groupby('City')['Profit'].sum().sort_values(ascending=False).head(5)
+    print(top_cities.apply(lambda x: f"${x:,.2f}"))
+    print("-" * 41)
+
+except FileNotFoundError:
+    print("❌ Error: 'Sample - Superstore.csv' file not found in the current directory.")
+except Exception as e:
+    print(f"❌ An error occurred during data processing: {e}")
+import pandas as pd
+
+try:
+    print("🔄 Loading dataset and running data cleaning pipeline...\n")
+    df = pd.read_csv('Sample - Superstore.csv', encoding='latin1')
+    
+    print("=========================================")
+    print("🛠️  DATA CLEANING & FEATURE ENGINEERING REPORT")
+    print("=========================================\n")
+
+    # STEP 1: Checking for Missing Values (Nulls)
+    print("🔍 1. Checking for missing values per column:")
+    missing_data = df.isnull().sum()
+    # Sirf wahi columns dikhayenge jinme missing data ho sakta hai
+    print(missing_data[missing_data >= 0]) 
+    print("-" * 41)
+
+    # STEP 2: Data Type Conversion (Converting Strings to Datetime objects)
+    print("\n📅 2. Converting date columns to professional Datetime format...")
+    df['Order Date'] = pd.to_datetime(df['Order Date'], errors='coerce')
+    df['Ship Date'] = pd.to_datetime(df['Ship Date'], errors='coerce')
+    
+    # Verification of data types
+    print(f"Order Date Type: {df['Order Date'].dtype}")
+    print(f"Ship Date Type: {df['Ship Date'].dtype}")
+    print("-" * 41)
+
+    # STEP 3: Feature Engineering (Creating Profit Margin % Column)
+    print("\n💡 3. Creating calculated column: 'Profit Margin (%)'...")
+    # Formula: (Profit / Sales) * 100
+    df['Profit Margin (%)'] = (df['Profit'] / df['Sales']) * 100
+    
+    # Displaying the clean data preview with the new column
+    print("\n📋 Cleaned Dataset Preview (Selected Columns):")
+    preview_columns = ['Order ID', 'Sales', 'Profit', 'Profit Margin (%)']
+    print(df[preview_columns].head())
+    print("-" * 41)
+
+    print("\n✅ Data pipeline executed successfully without any errors!")
+
+except FileNotFoundError:
+    print("❌ Error: 'Sample - Superstore.csv' file not found.")
+except Exception as e:
+    print(f"❌ An error occurred during processing: {e}")
+

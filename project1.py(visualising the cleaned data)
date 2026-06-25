@@ -1,0 +1,46 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+try:
+    print("🔄 Loading data and preparing visual dashboard...\n")
+    df = pd.read_csv('Sample - Superstore.csv', encoding='latin1')
+    
+    # [Data Cleaning Pipeline]
+    df['Order Date'] = pd.to_datetime(df['Order Date'], errors='coerce')
+    df['Profit Margin (%)'] = (df['Profit'] / df['Sales']) * 100
+
+    print("=========================================")
+    print("📊 GENERATING BUSINESS CHARTS")
+    print("=========================================\n")
+
+    # STEP 1: Aggregating Data for the Chart
+    # Hum Category wise Total Sales nikal rahe hain bar chart banane ke liye
+    category_sales = df.groupby('Category')['Sales'].sum().sort_values(ascending=False)
+    print("Data calculated for Category Sales. Plotting graph...")
+
+    # STEP 2: Creating the Plot (Chart design karna)
+    plt.figure(figsize=(8, 5)) # Chart ka size set kiya
+    
+    # Bar chart banana (Colors: Skyblue, Lightgreen, Lightcoral)
+    colors = ['#1f77b4', '#2ca02c', '#d62728']
+    category_sales.plot(kind='bar', color=colors, edgecolor='black')
+    
+    # Chart me titles aur labels lagana (Professional Look)
+    plt.title('Total Sales by Product Category', fontsize=14, fontweight='bold', pad=15)
+    plt.xlabel('Product Category', fontsize=12)
+    plt.ylabel('Total Sales ($)', fontsize=12)
+    plt.xticks(rotation=0) # X-axis ke naam ko seedha rakhne ke liye
+    plt.grid(axis='y', linestyle='--', alpha=0.7) # Background me halki lines matrix ke liye
+    
+    plt.tight_layout() # Elements ko screen par fit karne ke liye
+
+    # STEP 3: Displaying the Chart
+    print("\n🚀 Showing chart on screen. Close the chart window to end the program.")
+    plt.show()
+
+    print("\n✅ Process finished successfully!")
+
+except FileNotFoundError:
+    print("❌ Error: 'Sample - Superstore.csv' file not found.")
+except Exception as e:
+    print(f"❌ An error occurred: {e}")
